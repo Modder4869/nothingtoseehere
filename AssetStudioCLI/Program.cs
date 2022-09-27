@@ -29,6 +29,7 @@ namespace AssetStudioCLI
                 optionsBinder.MapOp,
                 optionsBinder.MapType,
                 optionsBinder.MapName,
+                optionsBinder.MapPath,
                 optionsBinder.GroupAssetsType,
                 optionsBinder.NoAssetBundle,
                 optionsBinder.NoIndexObject,
@@ -81,7 +82,8 @@ namespace AssetStudioCLI
                     {
                         ResourceIndex.FromFile(o.AIFile.FullName);
                     }
-                    CABManager.LoadMap(Studio.Game);
+                    var customPath = !String.IsNullOrEmpty(o.MapPath) ? o.MapPath : $"Maps/{game.MapName}.bin";
+                    CABManager.LoadMap(customPath, Studio.Game);
                     Logger.Info("Scanning for files");
                     var files = o.Input.Attributes == FileAttributes.Directory ? Directory.GetFiles(o.Input.FullName, $"*{game.Extension}", SearchOption.AllDirectories).OrderBy(x => x.Length).ToArray() : new string[] { o.Input.FullName };
                     Logger.Info(string.Format("Found {0} file(s)", files.Count()));
@@ -148,6 +150,7 @@ namespace AssetStudioCLI
         public FileInfo AIFile { get; set; }
         public FileInfo Input { get; set; }
         public DirectoryInfo Output { get; set; }
+        public string MapPath { get; set; }
     }
 
     public class OptionsBinder : BinderBase<Options>
@@ -159,6 +162,7 @@ namespace AssetStudioCLI
         public readonly Option<MapOpType> MapOp;
         public readonly Option<ExportListType> MapType;
         public readonly Option<string> MapName;
+        public readonly Option<string> MapPath;
         public readonly Option<AssetGroupOption> GroupAssetsType;
         public readonly Option<bool> NoAssetBundle;
         public readonly Option<bool> NoIndexObject;
@@ -184,6 +188,8 @@ namespace AssetStudioCLI
             Input = new Argument<FileInfo>("input_path", "Input file/folder.").LegalFilePathsOnly();
             Output = new Argument<DirectoryInfo>("output_path", "Output folder.").LegalFilePathsOnly();
             ResolveDependency = new Option<bool>("--resolve", "Resolve Dependencies");
+            MapPath = new Option<string>("--map_path", "Specify AssetMap path");
+
 
             XorByte = new Option<byte>("--xor_key", result =>
             {
@@ -260,6 +266,7 @@ namespace AssetStudioCLI
             MapOp = bindingContext.ParseResult.GetValueForOption(MapOp),
             MapType = bindingContext.ParseResult.GetValueForOption(MapType),
             MapName = bindingContext.ParseResult.GetValueForOption(MapName),
+            MapPath = bindingContext.ParseResult.GetValueForOption(MapPath),
             GroupAssetsType = bindingContext.ParseResult.GetValueForOption(GroupAssetsType),
             NoAssetBundle = bindingContext.ParseResult.GetValueForOption(NoAssetBundle),
             NoIndexObject = bindingContext.ParseResult.GetValueForOption(NoIndexObject),

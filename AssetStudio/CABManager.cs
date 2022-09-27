@@ -78,13 +78,14 @@ namespace AssetStudio
                 Logger.Warning($"{game.MapName} was not build, {e.Message}");
             }
         }
-        public static void LoadMap(Game game)
+        public static void LoadMap(Game game) => LoadMap($"Maps/{game.MapName}.bin",game);
+        public static void LoadMap(string filePath,Game game)
         {
             Logger.Info(string.Format("Loading {0}", game.MapName));
             try
             {
                 CABMap.Clear();
-                using (var binaryFile = File.OpenRead($"Maps/{game.MapName}.bin"))
+                using (var binaryFile = File.OpenRead(filePath))
                 using (var reader = new BinaryReader(binaryFile))
                 {
                     var count = reader.ReadInt32();
