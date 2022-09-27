@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -306,6 +307,56 @@ namespace AssetStudioCLI
             }
             return false;
         }
+        public static bool ExportAnimator(AssetItem item, string exportPath, List<AssetItem> animationList = null)
+        {
+            var exportFullPath = Path.Combine(exportPath, item.Text, item.Text + ".fbx");
+            if (File.Exists(exportFullPath))
+            {
+                exportFullPath = Path.Combine(exportPath, item.Text + item.UniqueID, item.Text + ".fbx");
+            }
+            var m_Animator = (Animator)item.Asset;
+            var convert = animationList != null
+                ? new ModelConverter(m_Animator, ImageFormat.Png, Studio.Game, animationList.Select(x => (AnimationClip)x.Asset).ToArray(), true)
+                : new ModelConverter(m_Animator, ImageFormat.Png, Studio.Game, ignoreController: true);
+            ExportFbx(convert, exportFullPath);
+            return true;
+        }
+
+        public static void ExportGameObject(GameObject gameObject, string exportPath, List<AssetItem> animationList = null)
+        {
+            var convert = animationList != null
+                ? new ModelConverter(gameObject, ImageFormat.Png, Studio.Game, animationList.Select(x => (AnimationClip)x.Asset).ToArray(), true)
+                : new ModelConverter(gameObject, ImageFormat.Png, Studio.Game, ignoreController: true);
+            exportPath = Path.Combine(exportPath, gameObject.assetsFile.fileName, gameObject.m_Name, FixFileName(gameObject.m_Name) + ".fbx");
+            ExportFbx(convert, exportPath);
+        }
+
+        public static void ExportGameObjectMerge(List<GameObject> gameObject, string exportPath, List<AssetItem> animationList = null)
+        {
+            var rootName = Path.GetFileNameWithoutExtension(exportPath);
+            var convert = animationList != null
+                ? new ModelConverter(rootName, gameObject, ImageFormat.Png, Studio.Game, animationList.Select(x => (AnimationClip)x.Asset).ToArray(), true)
+                : new ModelConverter(rootName, gameObject, ImageFormat.Png, Studio.Game, ignoreController: true);
+            ExportFbx(convert, exportPath);
+        }
+
+        private static void ExportFbx(IImported convert, string exportPath)
+        {
+            var eulerFilter = true;
+            var filterPrecision =(float)0.25;
+            var exportAllNodes = true;
+            var exportSkins = true;
+            var exportAnimations = true;
+            var exportBlendShape = true;
+            var castToBone = false;
+            var boneSize = (float)10;
+            var exportAllUvsAsDiffuseMaps = false;
+            var scaleFactor = (float)1;
+            var fbxVersion = 3;
+            var fbxFormat = 0;
+            ModelExporter.ExportFbx(exportPath, convert, eulerFilter, filterPrecision,
+                exportAllNodes, exportSkins, exportAnimations, exportBlendShape, castToBone, boneSize, exportAllUvsAsDiffuseMaps, scaleFactor, fbxVersion, fbxFormat == 1);
+        }
 
         public static bool ExportAnimationClip(AssetItem item, string exportPath)
         {
@@ -357,7 +408,7 @@ namespace AssetStudioCLI
                 case ClassIDType.Material:
                     return ExportMaterial(item, exportPath);
                 case ClassIDType.Animator:
-                    return false;
+                    return ExportAnimator(item, exportPath);
                 case ClassIDType.AnimationClip:
                     return ExportAnimationClip(item, exportPath);
                 case ClassIDType.AssetBundle:
