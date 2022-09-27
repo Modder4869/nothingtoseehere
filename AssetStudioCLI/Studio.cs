@@ -35,7 +35,7 @@ namespace AssetStudioCLI
 
     internal static class Studio
     {
-        public static AssetsManager assetsManager = new AssetsManager() { ResolveDependancies = false };
+        public static AssetsManager assetsManager = new AssetsManager();
         public static List<AssetItem> exportableAssets = new List<AssetItem>();
         public static Game Game;
 
@@ -351,6 +351,7 @@ namespace AssetStudioCLI
                             {
                                 assetItem.Text = gameObject.m_Name;
                             }
+                            exportable = true;
                             break;
                         case MonoBehaviour m_MonoBehaviour:
                             if (m_MonoBehaviour.m_Name == "" && m_MonoBehaviour.m_Script.TryGet(out var m_Script))

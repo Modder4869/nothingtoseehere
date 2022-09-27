@@ -35,7 +35,8 @@ namespace AssetStudioCLI
                 optionsBinder.XorByte,
                 optionsBinder.AIFile,
                 optionsBinder.Input,
-                optionsBinder.Output
+                optionsBinder.Output,
+                optionsBinder.ResolveDependency
             };
 
             rootCommand.SetHandler((Options o) =>
@@ -52,9 +53,11 @@ namespace AssetStudioCLI
                     }
 
                     Studio.Game = game;
+                    assetsManager.ResolveDependancies = o.ResolveDependency;
                     assetsManager.Game = game;
                     AssetBundle.Exportable = !o.NoAssetBundle;
                     IndexObject.Exportable = !o.NoIndexObject;
+                    Renderer.Parsable = true;
 
                     if (!o.Silent)
                     {
@@ -78,7 +81,7 @@ namespace AssetStudioCLI
                     {
                         ResourceIndex.FromFile(o.AIFile.FullName);
                     }
-
+                    CABManager.LoadMap(Studio.Game);
                     Logger.Info("Scanning for files");
                     var files = o.Input.Attributes == FileAttributes.Directory ? Directory.GetFiles(o.Input.FullName, $"*{game.Extension}", SearchOption.AllDirectories).OrderBy(x => x.Length).ToArray() : new string[] { o.Input.FullName };
                     Logger.Info(string.Format("Found {0} file(s)", files.Count()));
@@ -140,6 +143,7 @@ namespace AssetStudioCLI
         public AssetGroupOption GroupAssetsType { get; set; }
         public bool NoAssetBundle { get; set; }
         public bool NoIndexObject { get; set; }
+        public bool ResolveDependency { get; set; }
         public byte XorKey { get; set; }
         public FileInfo AIFile { get; set; }
         public FileInfo Input { get; set; }
@@ -158,6 +162,7 @@ namespace AssetStudioCLI
         public readonly Option<AssetGroupOption> GroupAssetsType;
         public readonly Option<bool> NoAssetBundle;
         public readonly Option<bool> NoIndexObject;
+        public readonly Option<bool> ResolveDependency;
         public readonly Option<byte> XorByte;
         public readonly Option<FileInfo> AIFile;
         public readonly Argument<FileInfo> Input;
@@ -178,6 +183,7 @@ namespace AssetStudioCLI
             AIFile = new Option<FileInfo>("--ai_file", "Specify asset_index json file path (to recover GI containers).").LegalFilePathsOnly();
             Input = new Argument<FileInfo>("input_path", "Input file/folder.").LegalFilePathsOnly();
             Output = new Argument<DirectoryInfo>("output_path", "Output folder.").LegalFilePathsOnly();
+            ResolveDependency = new Option<bool>("--resolve", "Resolve Dependencies");
 
             XorByte = new Option<byte>("--xor_key", result =>
             {
@@ -257,6 +263,7 @@ namespace AssetStudioCLI
             GroupAssetsType = bindingContext.ParseResult.GetValueForOption(GroupAssetsType),
             NoAssetBundle = bindingContext.ParseResult.GetValueForOption(NoAssetBundle),
             NoIndexObject = bindingContext.ParseResult.GetValueForOption(NoIndexObject),
+            ResolveDependency = bindingContext.ParseResult.GetValueForOption(ResolveDependency),
             XorKey = bindingContext.ParseResult.GetValueForOption(XorByte),
             AIFile = bindingContext.ParseResult.GetValueForOption(AIFile),
             Input = bindingContext.ParseResult.GetValueForArgument(Input),
