@@ -94,11 +94,48 @@ namespace AssetStudioGUI
 
         [DllImport("gdi32.dll")]
         private static extern IntPtr AddFontMemResourceEx(IntPtr pbFont, uint cbFont, IntPtr pdv, [In] ref uint pcFonts);
+        private void CABMapInit()
+        {
+            foreach (var game in GameManager.GetGames())
+            {
+                var toolStripMenuItem = new ToolStripMenuItem();
+                toolStripMenuItem.Text = game.Name;
+                var files = Directory.GetFiles("Maps", $"CABMap_{game.Name}_*.bin");
+                var items = new List<ToolStripItem>();
+                var CABName = $"CABMap_{game.Name}_{files.Length + 1}.bin";
+                foreach (var file in files)
+                {
+                    var menuItem = new ToolStripMenuItem() { Text = Path.GetFileNameWithoutExtension(file) };
+                    menuItem.Click += (o, e) =>
+                    {
+                        Studio.Game = game;
+                        assetsManager.Game = Studio.Game;
+                        Logger.Info($"Target Game is {game.DisplayName}");
+                        CABManager.LoadMap(file, game);
 
+
+                    };
+                    items.Add(menuItem);
+                }
+                var newItem = new ToolStripMenuItem() { Text = "Create New" };
+                toolStripMenuItem.DropDownItems.Add(newItem);
+                newItem.Click += (o, e) =>
+                {
+                    buildCustomCABMapToolStripMenuItem_Click(CABName, o, e);
+                };
+
+                if (items.Count > 0)
+                {
+                    toolStripMenuItem.DropDownItems.AddRange(items.ToArray());
+                }
+                loadCABMapToolStripMenuItem.DropDownItems.Add(toolStripMenuItem);
+            }
+        }
         public AssetStudioGUIForm()
         {
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
             InitializeComponent();
+            CABMapInit();
             Text = $"Studio v{Application.ProductVersion}";
             delayTimer = new System.Timers.Timer(800);
             delayTimer.Elapsed += new ElapsedEventHandler(delayTimer_Elapsed);
@@ -2166,7 +2203,21 @@ namespace AssetStudioGUI
                 await Task.Run(() => CABManager.BuildMap(files, Studio.Game));
             }
         }
+        private async void buildCustomCABMapToolStripMenuItem_Click(string CABName,object sender, EventArgs e)
+        {
+            var gameName = ((ToolStripMenuItem)sender).OwnerItem.Text;
+            var game = GameManager.GetGame(gameName);
 
+            var openFolderDialog = new OpenFolderDialog();
+            openFolderDialog.Title = $"Select {Studio.Game.Path} Folder";
+            if (openFolderDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                Logger.Info("scanning for files");
+                var files = Directory.GetFiles(openFolderDialog.Folder, $"*{Studio.Game.Extension}", SearchOption.AllDirectories).ToList();
+                Logger.Info(string.Format("found {0} files", files.Count()));
+                await Task.Run(() => CABManager.BuildMap($"Maps/{CABName}",files, game));
+            }
+        }
         private async void buildAssetMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var openFolderDialog = new OpenFolderDialog();
@@ -2251,6 +2302,11 @@ namespace AssetStudioGUI
             {
                 specifyAIVersion.Enabled = value;
             }
+        }
+
+        private void toolStripMenuItem17_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void glControl1_MouseWheel(object sender, MouseEventArgs e)

@@ -84,6 +84,7 @@
             this.console = new System.Windows.Forms.ToolStripMenuItem();
             this.miscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buildCABMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadCABMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buildAssetMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -298,6 +299,7 @@
             this.toolStripMenuItem17.Name = "toolStripMenuItem17";
             this.toolStripMenuItem17.Size = new System.Drawing.Size(225, 22);
             this.toolStripMenuItem17.Text = "Specify Game";
+            this.toolStripMenuItem17.Click += new System.EventHandler(this.toolStripMenuItem17_Click);
             // 
             // specifyGame
             // 
@@ -596,6 +598,7 @@
             // 
             this.miscToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.buildCABMapToolStripMenuItem,
+            this.loadCABMapToolStripMenuItem,
             this.buildAssetMapToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
             this.miscToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
@@ -604,14 +607,20 @@
             // buildCABMapToolStripMenuItem
             // 
             this.buildCABMapToolStripMenuItem.Name = "buildCABMapToolStripMenuItem";
-            this.buildCABMapToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.buildCABMapToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.buildCABMapToolStripMenuItem.Text = "Build CABMap";
             this.buildCABMapToolStripMenuItem.Click += new System.EventHandler(this.buildCABMapToolStripMenuItem_Click);
+            // 
+            // loadCABMapToolStripMenuItem
+            // 
+            this.loadCABMapToolStripMenuItem.Name = "loadCABMapToolStripMenuItem";
+            this.loadCABMapToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadCABMapToolStripMenuItem.Text = "Select CABMap";
             // 
             // buildAssetMapToolStripMenuItem
             // 
             this.buildAssetMapToolStripMenuItem.Name = "buildAssetMapToolStripMenuItem";
-            this.buildAssetMapToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.buildAssetMapToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.buildAssetMapToolStripMenuItem.Text = "Build AssetMap";
             this.buildAssetMapToolStripMenuItem.Click += new System.EventHandler(this.buildAssetMapToolStripMenuItem_Click);
             // 
@@ -914,7 +923,7 @@
             this.FMODtimerLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.FMODtimerLabel.Location = new System.Drawing.Point(460, 235);
             this.FMODtimerLabel.Name = "FMODtimerLabel";
-            this.FMODtimerLabel.Size = new System.Drawing.Size(78, 13);
+            this.FMODtimerLabel.Size = new System.Drawing.Size(81, 13);
             this.FMODtimerLabel.TabIndex = 7;
             this.FMODtimerLabel.Text = "0:00.0 / 0:00.0";
             // 
@@ -1302,6 +1311,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem15;
         private System.Windows.Forms.ToolStripMenuItem miscToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem buildCABMapToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadCABMapToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem console;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem16;
         private System.Windows.Forms.ToolStripComboBox specifyAIVersion;
