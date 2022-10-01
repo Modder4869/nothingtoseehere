@@ -19,6 +19,7 @@ namespace AssetStudio
         public SkinnedMeshRenderer m_SkinnedMeshRenderer;
         public Animator m_Animator;
         public Animation m_Animation;
+        public static bool Exportable;
 
         public GameObject(ObjectReader reader) : base(reader)
         {

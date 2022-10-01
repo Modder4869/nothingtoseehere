@@ -37,7 +37,8 @@ namespace AssetStudioCLI
                 optionsBinder.AIFile,
                 optionsBinder.Input,
                 optionsBinder.Output,
-                optionsBinder.ResolveDependency
+                optionsBinder.ResolveDependency,
+                optionsBinder.AddGameObject
             };
 
             rootCommand.SetHandler((Options o) =>
@@ -58,6 +59,7 @@ namespace AssetStudioCLI
                     assetsManager.Game = game;
                     AssetBundle.Exportable = !o.NoAssetBundle;
                     IndexObject.Exportable = !o.NoIndexObject;
+                    GameObject.Exportable = o.AddGameObject;
                     Renderer.Parsable = true;
 
                     if (!o.Silent)
@@ -145,7 +147,8 @@ namespace AssetStudioCLI
         public AssetGroupOption GroupAssetsType { get; set; }
         public bool NoAssetBundle { get; set; }
         public bool NoIndexObject { get; set; }
-        public bool ResolveDependency { get; set; }
+        public bool ResolveDependency { get; set; } 
+        public bool AddGameObject { get; set; }
         public byte XorKey { get; set; }
         public FileInfo AIFile { get; set; }
         public FileInfo Input { get; set; }
@@ -167,6 +170,7 @@ namespace AssetStudioCLI
         public readonly Option<bool> NoAssetBundle;
         public readonly Option<bool> NoIndexObject;
         public readonly Option<bool> ResolveDependency;
+        public readonly Option<bool> AddGameObject;
         public readonly Option<byte> XorByte;
         public readonly Option<FileInfo> AIFile;
         public readonly Argument<FileInfo> Input;
@@ -188,6 +192,7 @@ namespace AssetStudioCLI
             Input = new Argument<FileInfo>("input_path", "Input file/folder.").LegalFilePathsOnly();
             Output = new Argument<DirectoryInfo>("output_path", "Output folder.").LegalFilePathsOnly();
             ResolveDependency = new Option<bool>("--resolve", "Resolve Dependencies");
+            AddGameObject = new Option<bool>("--gameobject", "Include GameObjects in AssetMap");
             MapPath = new Option<string>("--map_path", "Specify AssetMap path");
 
 
@@ -271,6 +276,7 @@ namespace AssetStudioCLI
             NoAssetBundle = bindingContext.ParseResult.GetValueForOption(NoAssetBundle),
             NoIndexObject = bindingContext.ParseResult.GetValueForOption(NoIndexObject),
             ResolveDependency = bindingContext.ParseResult.GetValueForOption(ResolveDependency),
+            AddGameObject = bindingContext.ParseResult.GetValueForOption(AddGameObject),
             XorKey = bindingContext.ParseResult.GetValueForOption(XorByte),
             AIFile = bindingContext.ParseResult.GetValueForOption(AIFile),
             Input = bindingContext.ParseResult.GetValueForArgument(Input),
