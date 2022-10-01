@@ -219,7 +219,7 @@ namespace AssetStudioCLI
                                             var gameObject = new GameObject(objectReader);
                                             obj = gameObject;
                                             asset.Name = gameObject.m_Name;
-                                            exportable = false;
+                                            exportable = GameObject.Exportable;
                                             break;
                                         case ClassIDType.Shader:
                                             asset.Name = objectReader.ReadAlignedString();
