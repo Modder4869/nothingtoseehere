@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -342,18 +343,19 @@ namespace AssetStudioCLI
 
         private static void ExportFbx(IImported convert, string exportPath)
         {
-            var eulerFilter = true;
-            var filterPrecision =(float)0.25;
-            var exportAllNodes = true;
-            var exportSkins = true;
-            var exportAnimations = true;
-            var exportBlendShape = true;
-            var castToBone = false;
-            var boneSize = (float)10;
-            var exportAllUvsAsDiffuseMaps = false;
-            var scaleFactor = (float)1;
-            var fbxVersion = 3;
-            var fbxFormat = 0;
+            var eulerFilter = bool.Parse(ConfigurationManager.AppSettings["eulerFilter"]);
+            var filterPrecision = Convert.ToSingle(ConfigurationManager.AppSettings["filterPrecision"]);
+            var exportAllNodes = bool.Parse(ConfigurationManager.AppSettings["exportAllNodes"]);
+            var exportSkins = bool.Parse(ConfigurationManager.AppSettings["exportSkins"]);
+            var exportAnimations = bool.Parse(ConfigurationManager.AppSettings["exportAnimations"]);
+            var exportBlendShape = bool.Parse(ConfigurationManager.AppSettings["exportBlendShape"]);
+            var castToBone = bool.Parse(ConfigurationManager.AppSettings["castToBone"]);
+            var boneSize = Convert.ToSingle(ConfigurationManager.AppSettings["boneSize"]);
+            var exportAllUvsAsDiffuseMaps = bool.Parse(ConfigurationManager.AppSettings["exportAllUvsAsDiffuseMaps"]);
+            var scaleFactor = Convert.ToSingle(ConfigurationManager.AppSettings["scaleFactor"]);
+            var fbxVersion = Convert.ToInt32(ConfigurationManager.AppSettings["fbxVersion"]);
+            var fbxFormat = Convert.ToInt32(ConfigurationManager.AppSettings["fbxFormat"]);
+
             ModelExporter.ExportFbx(exportPath, convert, eulerFilter, filterPrecision,
                 exportAllNodes, exportSkins, exportAnimations, exportBlendShape, castToBone, boneSize, exportAllUvsAsDiffuseMaps, scaleFactor, fbxVersion, fbxFormat == 1);
         }
