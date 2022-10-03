@@ -30,6 +30,7 @@ namespace AssetStudioCLI
         ByType,
         ByContainer,
         BySource,
+        ByBlk,
         None,
     }
 
@@ -490,6 +491,16 @@ namespace AssetStudioCLI
                         else
                         {
                             exportPath = Path.Combine(savePath, Path.GetFileName(asset.SourceFile.originalPath) + "_export", asset.SourceFile.fileName);
+                        }
+                        break;
+                    case AssetGroupOption.ByBlk: //source file
+                        if (string.IsNullOrEmpty(asset.SourceFile.originalPath))
+                        {
+                            exportPath = Path.Combine(savePath, asset.SourceFile.fileName + "_export");
+                        }
+                        else
+                        {
+                            exportPath = Path.Combine(savePath, Path.GetFileName(asset.SourceFile.originalPath) + "_export");
                         }
                         break;
                     default:
