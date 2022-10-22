@@ -25,6 +25,7 @@ namespace AssetStudioCLI
                 optionsBinder.Silent,
                 optionsBinder.Types,
                 optionsBinder.Filters,
+                optionsBinder.ContainerFilters,
                 optionsBinder.GameName,
                 optionsBinder.MapOp,
                 optionsBinder.MapType,
@@ -96,7 +97,7 @@ namespace AssetStudioCLI
                         foreach (var file in files)
                         {
                             assetsManager.LoadFiles(file);
-                            BuildAssetData(o.Types, o.Filters, ref i);
+                            BuildAssetData(o.Types, o.Filters, o.ContainerFilters,ref i);
                             ExportAssets(o.Output.FullName, exportableAssets, o.GroupAssetsType);
                             exportableAssets.Clear();
                             assetsManager.Clear();
@@ -140,6 +141,7 @@ namespace AssetStudioCLI
         public bool Silent { get; set; }
         public ClassIDType[] Types { get; set; }
         public Regex[] Filters { get; set; }
+        public Regex[] ContainerFilters { get; set; }
         public string GameName { get; set; }
         public MapOpType MapOp { get; set; }
         public ExportListType MapType { get; set; }
@@ -161,6 +163,7 @@ namespace AssetStudioCLI
         public readonly Option<bool> Silent;
         public readonly Option<ClassIDType[]> Types;
         public readonly Option<Regex[]> Filters;
+        public readonly Option<Regex[]> ContainerFilters;
         public readonly Option<string> GameName;
         public readonly Option<MapOpType> MapOp;
         public readonly Option<ExportListType> MapType;
@@ -181,6 +184,7 @@ namespace AssetStudioCLI
             Silent = new Option<bool>("--silent", "Hide log messages.");
             Types = new Option<ClassIDType[]>("--type", "Specify unity class type(s)") { AllowMultipleArgumentsPerToken = true, ArgumentHelpName = "Texture2D|Sprite|etc.." };
             Filters = new Option<Regex[]>("--filter", result => result.Tokens.Select(x => new Regex(x.Value, RegexOptions.IgnoreCase)).ToArray(), false, "Specify regex filter(s).") { AllowMultipleArgumentsPerToken = true };
+            ContainerFilters = new Option<Regex[]>("--container", result => result.Tokens.Select(x => new Regex(x.Value, RegexOptions.IgnoreCase)).ToArray(), false, "Specify regex filter(s).") { AllowMultipleArgumentsPerToken = true };
             GameName = new Option<string>("--game", $"Specify Game.") { IsRequired = true };
             MapOp = new Option<MapOpType>("--map_op", "Specify which map to build.");
             MapType = new Option<ExportListType>("--map_type", "AssetMap output type.");
@@ -267,6 +271,7 @@ namespace AssetStudioCLI
             Silent = bindingContext.ParseResult.GetValueForOption(Silent),
             Types = bindingContext.ParseResult.GetValueForOption(Types),
             Filters = bindingContext.ParseResult.GetValueForOption(Filters),
+            ContainerFilters = bindingContext.ParseResult.GetValueForOption(ContainerFilters),
             GameName = bindingContext.ParseResult.GetValueForOption(GameName),
             MapOp = bindingContext.ParseResult.GetValueForOption(MapOp),
             MapType = bindingContext.ParseResult.GetValueForOption(MapType),

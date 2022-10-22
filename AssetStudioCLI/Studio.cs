@@ -297,7 +297,7 @@ namespace AssetStudioCLI
             return assets;
         }
 
-        public static void BuildAssetData(ClassIDType[] formats, Regex[] filters, ref int i)
+        public static void BuildAssetData(ClassIDType[] formats, Regex[] filters, Regex[] ContainerFilters,ref int i)
         {
             string productName = null;
             var objectCount = assetsManager.assetsFileList.Sum(x => x.Objects.Count);
@@ -451,11 +451,30 @@ namespace AssetStudioCLI
                     }
                 }
             }
+            //foreach ((var pptr, var container) in containers)
+            //{
+            //    if (pptr.TryGet(out var obj))
+            //    {              
+            //        objectAssetItemDic[obj].Container = container;
+            //    }
+            //}
             foreach ((var pptr, var container) in containers)
             {
                 if (pptr.TryGet(out var obj))
                 {
-                    objectAssetItemDic[obj].Container = container;
+                    var targetObj = objectAssetItemDic[obj];
+                    var isContainerFilterMatchRegex = ContainerFilters.Length == 0 || ContainerFilters.Any(x => x.IsMatch(container));
+                    if (isContainerFilterMatchRegex)
+                    {
+                        targetObj.Container = container;
+                        Console.WriteLine($"loaded{container}");
+                    }
+                    else
+                    {
+                        exportableAssets.Remove(targetObj);
+                        //Console.WriteLine($"skipped {container}");
+                    }
+
                 }
             }
             containers.Clear();

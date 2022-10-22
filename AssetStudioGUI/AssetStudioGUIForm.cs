@@ -98,9 +98,17 @@ namespace AssetStudioGUI
         {
             foreach (var game in GameManager.GetGames())
             {
+                string[] files;
+                try
+                {
+                    files = Directory.GetFiles("Maps", $"CABMap_{game.Name}_*.bin");
+                }
+                catch (DirectoryNotFoundException dirEx)
+                {
+                    return;
+                }
                 var toolStripMenuItem = new ToolStripMenuItem();
                 toolStripMenuItem.Text = game.Name;
-                var files = Directory.GetFiles("Maps", $"CABMap_{game.Name}_*.bin");
                 var items = new List<ToolStripItem>();
                 var CABName = $"CABMap_{game.Name}_{files.Length + 1}.bin";
                 foreach (var file in files)
