@@ -467,12 +467,10 @@ namespace AssetStudioCLI
                     if (isContainerFilterMatchRegex)
                     {
                         targetObj.Container = container;
-                        Console.WriteLine($"loaded{container}");
                     }
                     else
                     {
                         exportableAssets.Remove(targetObj);
-                        //Console.WriteLine($"skipped {container}");
                     }
 
                 }
