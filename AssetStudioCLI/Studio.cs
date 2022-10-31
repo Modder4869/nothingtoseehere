@@ -39,6 +39,7 @@ namespace AssetStudioCLI
         public static AssetsManager assetsManager = new AssetsManager();
         public static List<AssetItem> exportableAssets = new List<AssetItem>();
         public static Game Game;
+        public static Regex FileFilterRegex;
 
         public static int ExtractFolder(string path, string savePath)
         {
@@ -297,8 +298,12 @@ namespace AssetStudioCLI
             return assets;
         }
 
-        public static void BuildAssetData(ClassIDType[] formats, Regex[] filters, Regex[] ContainerFilters,ref int i)
+        public static void BuildAssetData(ClassIDType[] formats, Regex[] filters, Regex[] ContainerFilters, FileInfo FileFilter,ref int i)
         {
+            if (FileFilter != null)
+            {
+                FileFilterRegex = new Regex(File.ReadAllText(FileFilter.FullName));
+            }
             string productName = null;
             var objectCount = assetsManager.assetsFileList.Sum(x => x.Objects.Count);
             var objectAssetItemDic = new Dictionary<Object, AssetItem>(objectCount);
@@ -444,7 +449,8 @@ namespace AssetStudioCLI
                     }
                     var isMatchRegex = filters.Length == 0 || filters.Any(x => x.IsMatch(assetItem.Text));
                     var isFilteredType = formats.Length == 0 || formats.Contains(assetItem.Asset.type);
-                    if (isMatchRegex && isFilteredType && exportable)
+                    var isFileFilterMatch = FileFilterRegex == null || FileFilterRegex.IsMatch(assetItem.Text);
+                    if (isMatchRegex && isFilteredType && exportable && isFileFilterMatch)
                     {
                         exportableAssets.Add(assetItem);
                         i++;

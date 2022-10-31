@@ -39,7 +39,8 @@ namespace AssetStudioCLI
                 optionsBinder.Input,
                 optionsBinder.Output,
                 optionsBinder.ResolveDependency,
-                optionsBinder.AddGameObject
+                optionsBinder.AddGameObject,
+                optionsBinder.FileFilter
             };
 
             rootCommand.SetHandler((Options o) =>
@@ -97,7 +98,7 @@ namespace AssetStudioCLI
                         foreach (var file in files)
                         {
                             assetsManager.LoadFiles(file);
-                            BuildAssetData(o.Types, o.Filters, o.ContainerFilters,ref i);
+                            BuildAssetData(o.Types, o.Filters, o.ContainerFilters,o.FileFilter,ref i);
                             ExportAssets(o.Output.FullName, exportableAssets, o.GroupAssetsType);
                             exportableAssets.Clear();
                             assetsManager.Clear();
@@ -156,6 +157,7 @@ namespace AssetStudioCLI
         public FileInfo Input { get; set; }
         public DirectoryInfo Output { get; set; }
         public string MapPath { get; set; }
+        public FileInfo FileFilter { get; set; }
     }
 
     public class OptionsBinder : BinderBase<Options>
@@ -178,6 +180,8 @@ namespace AssetStudioCLI
         public readonly Option<FileInfo> AIFile;
         public readonly Argument<FileInfo> Input;
         public readonly Argument<DirectoryInfo> Output;
+        public readonly Option<FileInfo> FileFilter;
+
 
         public OptionsBinder()
         {
@@ -198,6 +202,7 @@ namespace AssetStudioCLI
             ResolveDependency = new Option<bool>("--resolve", "Resolve Dependencies");
             AddGameObject = new Option<bool>("--gameobject", "Include GameObjects in AssetMap");
             MapPath = new Option<string>("--map_path", "Specify AssetMap path");
+            FileFilter = new Option<FileInfo>("--file_filter", "read filter from file").LegalFilePathsOnly();
 
 
             XorByte = new Option<byte>("--xor_key", result =>
