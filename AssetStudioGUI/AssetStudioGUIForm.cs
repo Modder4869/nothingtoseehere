@@ -115,7 +115,7 @@ namespace AssetStudioGUI
                     {
                         Studio.Game = game;
                         assetsManager.Game = Studio.Game;
-                        Logger.Info($"Target Game is {game.DisplayName}");
+                        Logger.Info($"Target Game is {game.Name}");
                         CABManager.LoadMap(file, game);
 
 
