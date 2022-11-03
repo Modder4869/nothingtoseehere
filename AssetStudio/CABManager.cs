@@ -12,7 +12,7 @@ namespace AssetStudio
         public static void BuildMap(List<string> files, Game game) => BuildMap($"Maps/{game.MapName}.bin", files, game);
         public static void BuildMap(string CABName, List<string> files, Game game)
         {
-            Logger.Info(string.Format("Building {0}", game.MapName));
+            Logger.Info($"Building {game.Name}Map");
             try
             {
                 int collisions = 0;
@@ -71,17 +71,17 @@ namespace AssetStudio
                         }
                     }
                 }
-                Logger.Info($"{game.MapName} build successfully, {collisions} collisions found !!");
+                Logger.Info($"{game.Name}Map build successfully, {collisions} collisions found !!");
             }
             catch (Exception e)
             {
-                Logger.Warning($"{game.MapName} was not build, {e.Message}");
+                Logger.Warning($"{game.Name}Map was not build, {e.Message}");
             }
         }
         public static void LoadMap(Game game) => LoadMap($"Maps/{game.MapName}.bin",game);
         public static void LoadMap(string filePath,Game game)
         {
-            Logger.Info(string.Format("Loading {0}", game.MapName));
+            Logger.Info($"Loading {game.Name}Map");
             try
             {
                 CABMap.Clear();
@@ -104,11 +104,11 @@ namespace AssetStudio
                         CABMap.Add(cab, new Entry(path, offset, dependencies));
                     }
                 }
-                Logger.Info(string.Format("Loaded {0} !!", game.MapName));
+                Logger.Info($"Loaded {game.Name}Map !!");
             }
             catch (Exception e)
             {
-                Logger.Warning($"{game.Name} was not loaded, {e.Message}");
+                Logger.Warning($"{game.Name}Map was not loaded, {e.Message}");
             }
         }
 
