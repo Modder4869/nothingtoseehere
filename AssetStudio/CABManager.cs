@@ -77,7 +77,7 @@ namespace AssetStudio
                 Logger.Warning($"{game.Name}Map was not build, {e.Message}");
             }
         }
-        public static void LoadMap(Game game) => LoadMap($"Maps/{game.MapName}.bin",game);
+        public static void LoadMap(Game game) => LoadMap($"Maps/{game.Name}Map.bin",game);
         public static void LoadMap(string filePath,Game game)
         {
             Logger.Info($"Loading {game.Name}Map");
