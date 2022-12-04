@@ -324,6 +324,7 @@ namespace AssetStudioCLI
                     {
                         case GameObject m_GameObject:
                             assetItem.Text = m_GameObject.m_Name;
+                            exportable = true;
                             break;
                         case Texture2D m_Texture2D:
                             if (!string.IsNullOrEmpty(m_Texture2D.m_StreamData?.path))
