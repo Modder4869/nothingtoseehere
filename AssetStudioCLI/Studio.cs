@@ -40,6 +40,7 @@ namespace AssetStudioCLI
         public static List<AssetItem> exportableAssets = new List<AssetItem>();
         public static Game Game;
         public static Regex FileFilterRegex;
+        private static Regex FileContainerFilterRegex;
 
         public static int ExtractFolder(string path, string savePath)
         {
@@ -306,11 +307,15 @@ namespace AssetStudioCLI
             return assets;
         }
 
-        public static void BuildAssetData(ClassIDType[] typeFilters, Regex[] nameFilters, Regex[] containerFilters,FileInfo FileFilter, ref int i)
+        public static void BuildAssetData(ClassIDType[] typeFilters, Regex[] nameFilters, Regex[] containerFilters,FileInfo FileFilter, FileInfo FileContainerFilter,ref int i)
         {
             if (FileFilter != null)
             {
                 FileFilterRegex = new Regex(File.ReadAllText(FileFilter.FullName));
+            }  
+            if (FileContainerFilter != null)
+            {
+                FileContainerFilterRegex = new Regex(File.ReadAllText(FileContainerFilter.FullName));
             }
             string productName = null;
             var objectCount = assetsManager.assetsFileList.Sum(x => x.Objects.Count);
@@ -329,6 +334,7 @@ namespace AssetStudioCLI
                     {
                         case GameObject m_GameObject:
                             assetItem.Text = m_GameObject.m_Name;
+                            exportable = true;
                             break;
                         case Texture2D m_Texture2D:
                             if (!string.IsNullOrEmpty(m_Texture2D.m_StreamData?.path))
@@ -478,7 +484,9 @@ namespace AssetStudioCLI
                 if (pptr.TryGet(out var obj))
                 {
                     var item = objectAssetItemDic[obj];
-                    if (containerFilters.Length == 0 || containerFilters.Any(x => x.IsMatch(container)))
+                    var isContainerFilterMatch = containerFilters.Length == 0 || containerFilters.Any(x => x.IsMatch(container));
+                    var isContainerFileFilterMatch = FileContainerFilterRegex == null||FileContainerFilterRegex.IsMatch(container);
+                    if (isContainerFilterMatch && isContainerFileFilterMatch)
                     {
                         item.Container = container;
                     }
@@ -506,7 +514,7 @@ namespace AssetStudioCLI
                     case AssetGroupOption.ByContainer: //container path
                         if (!string.IsNullOrEmpty(asset.Container))
                         {
-                            exportPath = Path.HasExtension(asset.Container) ? Path.Combine(savePath, Path.GetFileNameWithoutExtension(asset.Container)) : Path.Combine(savePath, asset.Container);
+                            exportPath = Path.HasExtension(asset.Container) ? Path.Combine(savePath, Path.GetDirectoryName(asset.Container)) : Path.Combine(savePath, asset.Container);
                         }
                         else
                         {
