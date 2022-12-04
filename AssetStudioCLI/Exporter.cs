@@ -309,13 +309,16 @@ namespace AssetStudioCLI
             return true;
         }
 
-        public static void ExportGameObject(GameObject gameObject, string exportPath, List<AssetItem> animationList = null)
+        public static bool ExportGameObject(AssetItem item, string exportPath, List<AssetItem> animationList = null)
         {
+            var m_GameObject = (GameObject)item.Asset;
             var convert = animationList != null
-                ? new ModelConverter(gameObject, ImageFormat.Png, Studio.Game, animationList.Select(x => (AnimationClip)x.Asset).ToArray(), true)
-                : new ModelConverter(gameObject, ImageFormat.Png, Studio.Game, ignoreController: true);
-            exportPath = Path.Combine(exportPath, gameObject.assetsFile.fileName, gameObject.m_Name, FixFileName(gameObject.m_Name) + ".fbx");
+                ? new ModelConverter(m_GameObject, ImageFormat.Png, Studio.Game, animationList.Select(x => (AnimationClip)x.Asset).ToArray(), true)
+                : new ModelConverter(m_GameObject, ImageFormat.Png, Studio.Game, ignoreController: true);
+            //exportPath = Path.Combine(exportPath, m_GameObject.assetsFile.fileName, m_GameObject.m_Name, FixFileName(m_GameObject.m_Name) + ".fbx");
+            exportPath = Path.Combine(exportPath, item.Text + item.UniqueID, item.Text + ".fbx");
             ExportFbx(convert, exportPath);
+            return true;
         }
 
         public static void ExportGameObjectMerge(List<GameObject> gameObject, string exportPath, List<AssetItem> animationList = null)
@@ -394,7 +397,9 @@ namespace AssetStudioCLI
                 case ClassIDType.Sprite:
                     return ExportSprite(item, exportPath);
                 case ClassIDType.Animator:
-                    return ExportAnimator(item, exportPath);
+                    return ExportAnimator(item, exportPath); 
+                case ClassIDType.GameObject:
+                    return ExportGameObject(item, exportPath);
                 case ClassIDType.AnimationClip:
                     return ExportAnimationClip(item, exportPath);
                 case ClassIDType.MiHoYoBinData:
