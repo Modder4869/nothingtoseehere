@@ -9,7 +9,7 @@ namespace AssetStudio
     {
         public static Dictionary<string, Entry> CABMap = new Dictionary<string, Entry>(StringComparer.OrdinalIgnoreCase);
         public static Dictionary<string, HashSet<long>> offsets = new Dictionary<string, HashSet<long>>();
-        public static void BuildMap(List<string> files, Game game) => BuildMap($"Maps/{game.Name}.bin", files, game);
+        public static void BuildMap(List<string> files, Game game) => BuildMap($"Maps/{game.Name}Map.bin", files, game);
         public static void BuildMap(string CABName, List<string> files, Game game)
         {
             Logger.Info($"Building {game.Name}Map");
@@ -78,7 +78,7 @@ namespace AssetStudio
                 Logger.Warning($"{game.Name}Map was not build, {e.Message}");
             }
         }
-        public static void LoadMap(Game game) => LoadMap($"Maps/{game.Name}.bin",game);
+        public static void LoadMap(Game game) => LoadMap($"Maps/{game.Name}Map.bin",game);
         public static void LoadMap(string filePath,Game game)
         {
             Logger.Info($"Loading {game.Name}Map");
