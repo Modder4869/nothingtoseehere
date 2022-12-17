@@ -88,7 +88,7 @@ namespace AssetStudioCLI
                     {
                         ResourceIndex.FromFile(o.AIFile.FullName);
                     }
-                    var customPath = !String.IsNullOrEmpty(o.MapPath) ? o.MapPath : $"Maps/{game.Name}.bin";
+                    var customPath = !String.IsNullOrEmpty(o.MapPath) ? o.MapPath : $"Maps/{game.Name}Map.bin";
                     CABManager.LoadMap(customPath, Studio.Game);
                     Logger.Info("Scanning for files");
                     var files = o.Input.Attributes.HasFlag(FileAttributes.Directory) ? Directory.GetFiles(o.Input.FullName, $"*{game.Extension}", SearchOption.AllDirectories).OrderBy(x => x.Length).ToArray() : new string[] { o.Input.FullName };
