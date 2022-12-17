@@ -305,7 +305,12 @@ namespace AssetStudioCLI
             var convert = animationList != null
                 ? new ModelConverter(m_Animator, ImageFormat.Png, Studio.Game, animationList.Select(x => (AnimationClip)x.Asset).ToArray(), true)
                 : new ModelConverter(m_Animator, ImageFormat.Png, Studio.Game, ignoreController: true);
-            ExportFbx(convert, exportFullPath);
+            if (convert.MeshList != null && convert.MeshList.Count > 0)
+            {
+                ExportFbx(convert, exportFullPath);
+                return true;
+            }
+            Console.WriteLine($"skipped {item.Text} from {item.Asset.assetsFile.originalPath}");
             return true;
         }
 
@@ -317,8 +322,14 @@ namespace AssetStudioCLI
                 : new ModelConverter(m_GameObject, ImageFormat.Png, Studio.Game, ignoreController: true);
             //exportPath = Path.Combine(exportPath, m_GameObject.assetsFile.fileName, m_GameObject.m_Name, FixFileName(m_GameObject.m_Name) + ".fbx");
             exportPath = Path.Combine(exportPath, item.Text + item.UniqueID, item.Text + ".fbx");
-            ExportFbx(convert, exportPath);
+            if (convert.MeshList != null && convert.MeshList.Count > 0)
+            {
+                ExportFbx(convert, exportPath);
+                return true;
+            }
+            Console.WriteLine($"skipped {item.Text} from {item.Asset.assetsFile.originalPath}");
             return true;
+         
         }
 
         public static void ExportGameObjectMerge(List<GameObject> gameObject, string exportPath, List<AssetItem> animationList = null)
