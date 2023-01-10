@@ -327,7 +327,7 @@ namespace AssetStudioCLI
                 {
                     var assetItem = new AssetItem(asset);
                     objectAssetItemDic.Add(asset, assetItem);
-                    assetItem.UniqueID = "#" + i;
+                    assetItem.UniqueID = "#" + i++;
                     assetItem.Text = "";
                     var exportable = false;
                     switch (asset)
@@ -468,7 +468,6 @@ namespace AssetStudioCLI
                     if (isMatchRegex && isFilteredType && exportable && isFileFilterMatch)
                     {
                         exportableAssets.Add(assetItem);
-                        i++;
                     }
                 }
             }
