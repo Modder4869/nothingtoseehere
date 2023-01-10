@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Xml.Linq;
 
@@ -829,9 +830,13 @@ namespace AssetStudio
                                     m_UV1 = componentsFloatArray;
                                     break;
                                 case 6: //kShaderChannelTexCoord2
+                                    if (reader.Game.Name == "GI" || reader.Game.Name == "GI_CB1" || reader.Game.Name == "GI_CB2" || reader.Game.Name == "GI_CB3")
+                                        continue;
                                     m_UV2 = componentsFloatArray;
                                     break;
                                 case 7: //kShaderChannelTexCoord3
+                                    if (reader.Game.Name == "GI" || reader.Game.Name == "GI_CB1" || reader.Game.Name == "GI_CB2" || reader.Game.Name == "GI_CB3")
+                                        continue;
                                     m_UV3 = componentsFloatArray;
                                     break;
                                 case 8: //kShaderChannelTexCoord4
@@ -895,6 +900,8 @@ namespace AssetStudio
                                     m_UV1 = componentsFloatArray;
                                     break;
                                 case 5:
+                                    if (reader.Game.Name == "GI" || reader.Game.Name == "GI_CB1" || reader.Game.Name == "GI_CB2" || reader.Game.Name == "GI_CB3")
+                                        continue;
                                     if (version[0] >= 5) //kShaderChannelTexCoord2
                                     {
                                         m_UV2 = componentsFloatArray;
@@ -905,6 +912,8 @@ namespace AssetStudio
                                     }
                                     break;
                                 case 6: //kShaderChannelTexCoord3
+                                    if (reader.Game.Name == "GI" || reader.Game.Name == "GI_CB1" || reader.Game.Name == "GI_CB2" || reader.Game.Name == "GI_CB3")
+                                        continue;
                                     m_UV3 = componentsFloatArray;
                                     break;
                                 case 7: //kShaderChannelTangent
