@@ -250,7 +250,7 @@ namespace AssetStudioGUI
                                         case ClassIDType.MiHoYoBinData:
                                             if (indexObject.Names.TryGetValue(objectReader.m_PathID, out var binName))
                                             {
-                                                var path = ResourceIndex.GetContainerFromBinName(file, binName);
+                                                var path = ResourceIndex.GetContainerFromBinName(binName);
                                                 asset.Container = path;
                                                 asset.Name = !string.IsNullOrEmpty(path) ? Path.GetFileName(path) : binName;
                                             }
@@ -430,7 +430,7 @@ namespace AssetStudioGUI
                                     var game = GameManager.GetGame("GI");
                                     if (Path.GetExtension(assetsFile.originalPath) == game.Extension)
                                     {
-                                        path = ResourceIndex.GetContainerFromBinName(assetsFile.originalPath, binName);
+                                        path = ResourceIndex.GetContainerFromBinName(binName);
                                     }
                                     else
                                     {
@@ -617,7 +617,7 @@ namespace AssetStudioGUI
                         case AssetGroupOption.ByContainer: //container path
                             if (!string.IsNullOrEmpty(asset.Container))
                             {
-                                exportPath = Path.HasExtension(asset.Container) ? Path.Combine(savePath, Path.GetFileNameWithoutExtension(asset.Container)) : Path.Combine(savePath, asset.Container);
+                                exportPath = Path.HasExtension(asset.Container) ? Path.Combine(savePath, Path.GetDirectoryName(asset.Container)) : Path.Combine(savePath, asset.Container);
                             }
                             else
                             {

@@ -568,8 +568,8 @@ namespace AssetStudio
                     }
                     var m_KeepVertices = reader.ReadBoolean();
                     var m_KeepIndices = reader.ReadBoolean();
+                    reader.AlignStream();
                 }
-                reader.AlignStream();
                 if (reader.Game.Name == "GI" || reader.Game.Name == "GI_CB2" || reader.Game.Name == "GI_CB3")
                 {
                     var m_PackSkinDataToUV2UV3 = reader.ReadBoolean();
