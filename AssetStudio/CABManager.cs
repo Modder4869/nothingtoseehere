@@ -8,8 +8,8 @@ namespace AssetStudio
     {
         public static Dictionary<string, Entry> CABMap = new Dictionary<string, Entry>(StringComparer.OrdinalIgnoreCase);
         public static Dictionary<string, HashSet<long>> offsets = new Dictionary<string, HashSet<long>>();
-
-        public static void BuildMap(List<string> files, Game game)
+        public static void BuildMap(List<string> files, Game game) => BuildMap($"Maps/{game.Name}Map.bin", files, game);
+        public static void BuildMap(string CABName, List<string> files, Game game)
         {
             Logger.Info($"Building {game.Name}Map");
             try
@@ -49,7 +49,7 @@ namespace AssetStudio
                 }
 
                 CABMap = CABMap.OrderBy(pair => pair.Key).ToDictionary(pair => pair.Key, pair => pair.Value);
-                var outputFile = new FileInfo($"Maps/{game.Name}Map.bin");
+                var outputFile = new FileInfo(CABName);
 
                 if (!outputFile.Directory.Exists)
                     outputFile.Directory.Create();

@@ -84,6 +84,7 @@
             this.console = new System.Windows.Forms.ToolStripMenuItem();
             this.miscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buildCABMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadCABMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buildAssetMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -300,6 +301,7 @@
             this.toolStripMenuItem17.Name = "toolStripMenuItem17";
             this.toolStripMenuItem17.Size = new System.Drawing.Size(225, 22);
             this.toolStripMenuItem17.Text = "Specify Game";
+            this.toolStripMenuItem17.Click += new System.EventHandler(this.toolStripMenuItem17_Click);
             // 
             // specifyGame
             // 
@@ -599,6 +601,7 @@
             // 
             this.miscToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.buildCABMapToolStripMenuItem,
+            this.loadCABMapToolStripMenuItem,
             this.buildAssetMapToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
             this.miscToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
@@ -610,6 +613,12 @@
             this.buildCABMapToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.buildCABMapToolStripMenuItem.Text = "Build CABMap";
             this.buildCABMapToolStripMenuItem.Click += new System.EventHandler(this.buildCABMapToolStripMenuItem_Click);
+            // 
+            // loadCABMapToolStripMenuItem
+            // 
+            this.loadCABMapToolStripMenuItem.Name = "loadCABMapToolStripMenuItem";
+            this.loadCABMapToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadCABMapToolStripMenuItem.Text = "Select CABMap";
             // 
             // buildAssetMapToolStripMenuItem
             // 
@@ -1317,6 +1326,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem15;
         private System.Windows.Forms.ToolStripMenuItem miscToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem buildCABMapToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadCABMapToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem console;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem16;
         private System.Windows.Forms.ToolStripComboBox specifyAIVersion;

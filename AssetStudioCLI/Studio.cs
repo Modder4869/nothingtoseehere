@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using static AssetStudioCLI.Exporter;
 using Object = AssetStudio.Object;
+using System.Configuration;
 
 namespace AssetStudioCLI
 {
@@ -39,6 +40,8 @@ namespace AssetStudioCLI
         public static AssetsManager assetsManager = new AssetsManager();
         public static List<AssetItem> exportableAssets = new List<AssetItem>();
         public static Game Game;
+        public static Regex FileFilterRegex;
+        private static Regex FileContainerFilterRegex;
 
         public static int ExtractFolder(string path, string savePath)
         {
@@ -146,6 +149,7 @@ namespace AssetStudioCLI
 
         public static List<AssetEntry> BuildAssetMap(List<string> files, ClassIDType[] typeFilters, Regex[] nameFilters, Regex[] containerFilters)
         {
+            var exportShader = bool.Parse(ConfigurationManager.AppSettings["exportShader"]);
             var assets = new List<AssetEntry>();
             for (int i = 0; i < files.Count; i++)
             {
@@ -223,11 +227,14 @@ namespace AssetStudioCLI
                                             exportable = GameObject.Exportable;
                                             break;
                                         case ClassIDType.Shader:
-                                            asset.Name = objectReader.ReadAlignedString();
-                                            if (string.IsNullOrEmpty(asset.Name))
+                                            if (exportShader)
                                             {
-                                                var m_parsedForm = new SerializedShader(objectReader);
-                                                asset.Name = m_parsedForm.m_Name;
+                                                asset.Name = objectReader.ReadAlignedString();
+                                                if (string.IsNullOrEmpty(asset.Name))
+                                                {
+                                                    var m_parsedForm = new SerializedShader(objectReader);
+                                                    asset.Name = m_parsedForm.m_Name;
+                                                }
                                             }
                                             break;
                                         case ClassIDType.Animator:
@@ -305,8 +312,16 @@ namespace AssetStudioCLI
             return assets;
         }
 
-        public static void BuildAssetData(ClassIDType[] typeFilters, Regex[] nameFilters, Regex[] containerFilters, ref int i)
+        public static void BuildAssetData(ClassIDType[] typeFilters, Regex[] nameFilters, Regex[] containerFilters,FileInfo FileFilter, FileInfo FileContainerFilter,ref int i)
         {
+            if (FileFilter != null)
+            {
+                FileFilterRegex = new Regex(File.ReadAllText(FileFilter.FullName));
+            }  
+            if (FileContainerFilter != null)
+            {
+                FileContainerFilterRegex = new Regex(File.ReadAllText(FileContainerFilter.FullName));
+            }
             string productName = null;
             var objectCount = assetsManager.assetsFileList.Sum(x => x.Objects.Count);
             var objectAssetItemDic = new Dictionary<Object, AssetItem>(objectCount);
@@ -453,18 +468,29 @@ namespace AssetStudioCLI
                     }
                     var isMatchRegex = nameFilters.Length == 0 || nameFilters.Any(x => x.IsMatch(assetItem.Text));
                     var isFilteredType = typeFilters.Length == 0 || typeFilters.Contains(assetItem.Asset.type);
-                    if (isMatchRegex && isFilteredType && exportable)
+                    var isFileFilterMatch = FileFilterRegex == null || FileFilterRegex.IsMatch(assetItem.Text);
+
+                    if (isMatchRegex && isFilteredType && exportable && isFileFilterMatch)
                     {
                         exportableAssets.Add(assetItem);
                     }
                 }
             }
+            //foreach ((var pptr, var container) in containers)
+            //{
+            //    if (pptr.TryGet(out var obj))
+            //    {              
+            //        objectAssetItemDic[obj].Container = container;
+            //    }
+            //}
             foreach ((var pptr, var container) in containers)
             {
                 if (pptr.TryGet(out var obj))
                 {
                     var item = objectAssetItemDic[obj];
-                    if (containerFilters.Length == 0 || containerFilters.Any(x => x.IsMatch(container)))
+                    var isContainerFilterMatch = containerFilters.Length == 0 || containerFilters.Any(x => x.IsMatch(container));
+                    var isContainerFileFilterMatch = FileContainerFilterRegex == null||FileContainerFilterRegex.IsMatch(container);
+                    if (isContainerFilterMatch && isContainerFileFilterMatch)
                     {
                         item.Container = container;
                     }

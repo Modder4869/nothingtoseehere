@@ -40,7 +40,9 @@ namespace AssetStudioCLI
                 optionsBinder.Input,
                 optionsBinder.Output,
                 optionsBinder.ResolveDependency,
-                optionsBinder.AddGameObject
+                optionsBinder.AddGameObject,
+                optionsBinder.FileFilter,
+                optionsBinder.FileContainerFilter
             };
 
             rootCommand.SetHandler((Options o) =>
@@ -98,7 +100,7 @@ namespace AssetStudioCLI
                         foreach (var file in files)
                         {
                             assetsManager.LoadFiles(file);
-                            BuildAssetData(o.TypeFilter, o.NameFilter, o.ContainerFilter, ref i);
+                            BuildAssetData(o.TypeFilter, o.NameFilter, o.ContainerFilter, o.FileFilter,o.FileContainerFilter,ref i);
                             ExportAssets(o.Output.FullName, exportableAssets, o.GroupAssetsType);
                             exportableAssets.Clear();
                             assetsManager.Clear();
@@ -157,6 +159,8 @@ namespace AssetStudioCLI
         public FileInfo Input { get; set; }
         public DirectoryInfo Output { get; set; }
         public string MapPath { get; set; }
+        public FileInfo FileFilter { get; set; }
+        public FileInfo FileContainerFilter { get; set; }
     }
 
     public class OptionsBinder : BinderBase<Options>
@@ -179,6 +183,9 @@ namespace AssetStudioCLI
         public readonly Option<FileInfo> AIFile;
         public readonly Argument<FileInfo> Input;
         public readonly Argument<DirectoryInfo> Output;
+        public readonly Option<FileInfo> FileFilter;
+        public readonly Option<FileInfo> FileContainerFilter;
+
 
         public OptionsBinder()
         {
@@ -199,6 +206,8 @@ namespace AssetStudioCLI
             ResolveDependency = new Option<bool>("--resolve", "Resolve Dependencies");
             AddGameObject = new Option<bool>("--gameobject", "Include GameObjects in AssetMap");
             MapPath = new Option<string>("--map_path", "Specify AssetMap path");
+            FileFilter = new Option<FileInfo>("--file_filter", "read name filter from file").LegalFilePathsOnly();
+            FileContainerFilter = new Option<FileInfo>("--file_container_filter", "read container filter from file").LegalFilePathsOnly();
 
 
             XorByte = new Option<byte>("--xor_key", result =>
@@ -291,7 +300,9 @@ namespace AssetStudioCLI
             XorKey = bindingContext.ParseResult.GetValueForOption(XorByte),
             AIFile = bindingContext.ParseResult.GetValueForOption(AIFile),
             Input = bindingContext.ParseResult.GetValueForArgument(Input),
-            Output = bindingContext.ParseResult.GetValueForArgument(Output)
+            Output = bindingContext.ParseResult.GetValueForArgument(Output), 
+            FileFilter = bindingContext.ParseResult.GetValueForOption(FileFilter),
+            FileContainerFilter = bindingContext.ParseResult.GetValueForOption(FileContainerFilter),
         };
     }
 }
