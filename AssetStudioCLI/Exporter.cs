@@ -352,12 +352,13 @@ namespace AssetStudioCLI
             var castToBone = bool.Parse(ConfigurationManager.AppSettings["castToBone"]);
             var boneSize = Convert.ToSingle(ConfigurationManager.AppSettings["boneSize"]);
             var exportAllUvsAsDiffuseMaps = bool.Parse(ConfigurationManager.AppSettings["exportAllUvsAsDiffuseMaps"]);
+            var exportUV0UV1 = bool.Parse(ConfigurationManager.AppSettings["exportUV0UV1"]);
             var scaleFactor = Convert.ToSingle(ConfigurationManager.AppSettings["scaleFactor"]);
             var fbxVersion = Convert.ToInt32(ConfigurationManager.AppSettings["fbxVersion"]);
             var fbxFormat = Convert.ToInt32(ConfigurationManager.AppSettings["fbxFormat"]);
 
             ModelExporter.ExportFbx(exportPath, convert, eulerFilter, filterPrecision,
-                exportAllNodes, exportSkins, exportAnimations, exportBlendShape, castToBone, boneSize, exportAllUvsAsDiffuseMaps, scaleFactor, fbxVersion, fbxFormat == 1);
+                exportAllNodes, exportSkins, exportAnimations, exportBlendShape, castToBone, boneSize, exportAllUvsAsDiffuseMaps, exportUV0UV1,scaleFactor, fbxVersion, fbxFormat == 1);
         }
 
         public static bool ExportAnimationClip(AssetItem item, string exportPath)

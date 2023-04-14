@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using static AssetStudioCLI.Exporter;
 using Object = AssetStudio.Object;
+using System.Configuration;
 
 namespace AssetStudioCLI
 {
@@ -148,6 +149,7 @@ namespace AssetStudioCLI
 
         public static List<AssetEntry> BuildAssetMap(List<string> files, ClassIDType[] typeFilters, Regex[] nameFilters, Regex[] containerFilters)
         {
+            var exportShader = bool.Parse(ConfigurationManager.AppSettings["exportShader"]);
             var assets = new List<AssetEntry>();
             for (int i = 0; i < files.Count; i++)
             {
@@ -225,11 +227,14 @@ namespace AssetStudioCLI
                                             exportable = GameObject.Exportable;
                                             break;
                                         case ClassIDType.Shader:
-                                            asset.Name = objectReader.ReadAlignedString();
-                                            if (string.IsNullOrEmpty(asset.Name))
+                                            if (exportShader)
                                             {
-                                                var m_parsedForm = new SerializedShader(objectReader);
-                                                asset.Name = m_parsedForm.m_Name;
+                                                asset.Name = objectReader.ReadAlignedString();
+                                                if (string.IsNullOrEmpty(asset.Name))
+                                                {
+                                                    var m_parsedForm = new SerializedShader(objectReader);
+                                                    asset.Name = m_parsedForm.m_Name;
+                                                }
                                             }
                                             break;
                                         case ClassIDType.Animator:
