@@ -159,6 +159,8 @@ namespace AssetStudioGUI
 
         public static List<AssetEntry> BuildAssetMap(List<string> files)
         {
+            var exportShader = Properties.Settings.Default.disableShader;
+
             var assets = new List<AssetEntry>();
             for (int i = 0; i < files.Count; i++)
             {
@@ -236,11 +238,14 @@ namespace AssetStudioGUI
                                             exportable = false;
                                             break;
                                         case ClassIDType.Shader:
-                                            asset.Name = objectReader.ReadAlignedString();
-                                            if (string.IsNullOrEmpty(asset.Name))
+                                            if (!exportShader)
                                             {
-                                                var m_parsedForm = new SerializedShader(objectReader);
-                                                asset.Name = m_parsedForm.m_Name;
+                                                asset.Name = objectReader.ReadAlignedString();
+                                                if (string.IsNullOrEmpty(asset.Name))
+                                                {
+                                                    var m_parsedForm = new SerializedShader(objectReader);
+                                                    asset.Name = m_parsedForm.m_Name;
+                                                }
                                             }
                                             break;
                                         case ClassIDType.Animator:
