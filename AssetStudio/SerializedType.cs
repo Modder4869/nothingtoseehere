@@ -17,5 +17,6 @@ namespace AssetStudio
         public string m_KlassName;
         public string m_NameSpace;
         public string m_AsmName;
+        public bool Match(string hash) => Convert.ToHexString(m_OldTypeHash) == hash;
     }
 }
