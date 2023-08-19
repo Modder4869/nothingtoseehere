@@ -99,7 +99,6 @@ namespace AssetStudioCLI
                         var i = 0;
                         foreach (var file in files)
                         {
-                            assetsManager.TypeFilter = o.TypeFilter;
                             assetsManager.LoadFiles(file);
                             BuildAssetData(o.TypeFilter, o.NameFilter, o.ContainerFilter, o.FileFilter,o.FileContainerFilter,ref i);
                             ExportAssets(o.Output.FullName, exportableAssets, o.GroupAssetsType);

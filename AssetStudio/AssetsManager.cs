@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using static AssetStudio.ImportHelper;
+
 namespace AssetStudio
 {
     public class AssetsManager
@@ -16,7 +17,7 @@ namespace AssetStudio
 
         internal Dictionary<string, int> assetsFileIndexCache = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         internal Dictionary<string, BinaryReader> resourceFileReaders = new Dictionary<string, BinaryReader>(StringComparer.OrdinalIgnoreCase);
-        public ClassIDType[] TypeFilter { get; set; }
+
         private List<string> importFiles = new List<string>();
         private HashSet<string> importFilesHash = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private HashSet<string> assetsFileListHash = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -395,14 +396,9 @@ namespace AssetStudio
                 foreach (var objectInfo in assetsFile.m_Objects)
                 {
                     var objectReader = new ObjectReader(assetsFile.reader, assetsFile, objectInfo);
-
                     try
                     {
                         Object obj;
-                        if (TypeFilter != null && !TypeFilter.Contains(objectReader.type))
-                        {
-                            continue;
-                        };
                         switch (objectReader.type)
                         {
                             case ClassIDType.Animation:
