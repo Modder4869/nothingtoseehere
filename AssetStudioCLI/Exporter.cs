@@ -11,6 +11,7 @@ namespace AssetStudioCLI
 {
     internal static class Exporter
     {
+        private static bool skipDuplicates = bool.Parse(ConfigurationManager.AppSettings["skipDuplicates"]);
         public static bool ExportTexture2D(AssetItem item, string exportPath)
         {
             var m_Texture2D = (Texture2D)item.Asset;
@@ -286,9 +287,15 @@ namespace AssetStudioCLI
                 Directory.CreateDirectory(dir);
                 return true;
             }
-            fullPath = Path.Combine(dir, fileName + item.UniqueID + extension);
+         dir = Path.Combine(dir, "DUPLICATED");
+         fullPath = Path.Combine(dir, fileName + item.UniqueID + extension);
             if (!File.Exists(fullPath))
             {
+                if (skipDuplicates)
+                {
+                    Console.WriteLine($"skipped {item.Text} from {item.Asset.assetsFile.originalPath.Split("\\").Last()} Exist Already!");
+                    return false;
+                }
                 Directory.CreateDirectory(dir);
                 return true;
             }
@@ -297,20 +304,32 @@ namespace AssetStudioCLI
         public static bool ExportAnimator(AssetItem item, string exportPath, List<AssetItem> animationList = null)
         {
             var exportFullPath = Path.Combine(exportPath, item.Text, item.Text + ".fbx");
-            if (File.Exists(exportFullPath))
-            {
-                exportFullPath = Path.Combine(exportPath, item.Text + item.UniqueID, item.Text + ".fbx");
-            }
+       
             var m_Animator = (Animator)item.Asset;
             var convert = animationList != null
                 ? new ModelConverter(m_Animator, ImageFormat.Png, Studio.Game, animationList.Select(x => (AnimationClip)x.Asset).ToArray(), true)
                 : new ModelConverter(m_Animator, ImageFormat.Png, Studio.Game, ignoreController: true);
             if (convert.MeshList != null && convert.MeshList.Count > 0)
             {
+                if (File.Exists(exportFullPath))
+                {
+                    string folderPath = Path.Combine(exportPath, "DUPLICATED");
+                    if (!Directory.Exists(folderPath))
+                    {
+                        if (skipDuplicates)
+                        {
+                            Console.WriteLine($"skipped {item.Text} from {item.Asset.assetsFile.originalPath.Split("\\").Last()} Exist Already!");
+                            return false;
+                        }
+                        Directory.CreateDirectory(folderPath);
+                    }
+                    exportFullPath = Path.Combine(folderPath, item.Text + item.UniqueID, item.Text + ".fbx");
+
+                }
                 ExportFbx(convert, exportFullPath);
                 return true;
             }
-            Console.WriteLine($"skipped {item.Text} from {item.Asset.assetsFile.originalPath}");
+            Console.WriteLine($"skipped {item.Text} from {item.Asset.assetsFile.originalPath.Split("\\").Last()} no Mesh!");
             return true;
         }
 
@@ -321,13 +340,29 @@ namespace AssetStudioCLI
                 ? new ModelConverter(m_GameObject, ImageFormat.Png, Studio.Game, animationList.Select(x => (AnimationClip)x.Asset).ToArray(), true)
                 : new ModelConverter(m_GameObject, ImageFormat.Png, Studio.Game, ignoreController: true);
             //exportPath = Path.Combine(exportPath, m_GameObject.assetsFile.fileName, m_GameObject.m_Name, FixFileName(m_GameObject.m_Name) + ".fbx");
-            exportPath = Path.Combine(exportPath, item.Text + item.UniqueID, item.Text + ".fbx");
+            //exportPath = Path.Combine(exportPath, item.Text + item.UniqueID, item.Text + ".fbx");
+            var exportFullPath = Path.Combine(exportPath, item.Text, item.Text + ".fbx");
             if (convert.MeshList != null && convert.MeshList.Count > 0)
             {
-                ExportFbx(convert, exportPath);
+                if (File.Exists(exportFullPath))
+                {
+                    string folderPath = Path.Combine(exportPath, "DUPLICATED");
+                    if (!Directory.Exists(folderPath))
+                    {
+                        if (skipDuplicates)
+                        {
+                            Console.WriteLine($"skipped {item.Text} from {item.Asset.assetsFile.originalPath.Split("\\").Last()} Exist Already!");
+                            return false;
+                        }
+                        Directory.CreateDirectory(folderPath);
+                    }
+                    exportFullPath = Path.Combine(folderPath, item.Text + item.UniqueID, item.Text + ".fbx");
+
+                }
+                ExportFbx(convert, exportFullPath);
                 return true;
             }
-            Console.WriteLine($"skipped {item.Text} from {item.Asset.assetsFile.originalPath}");
+            Console.WriteLine($"skipped {item.Text} from {item.Asset.assetsFile.originalPath.Split("\\").Last()} no Mesh!");
             return true;
          
         }
