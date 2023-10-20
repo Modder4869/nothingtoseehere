@@ -404,9 +404,9 @@ namespace AssetStudio
                             case ClassIDType.Animation:
                                 obj = new Animation(objectReader);
                                 break;
-                            case ClassIDType.AnimationClip:
-                                obj = new AnimationClip(objectReader);
-                                break;
+                            //case ClassIDType.AnimationClip:
+                            //    obj = new AnimationClip(objectReader);
+                            //    break;
                             case ClassIDType.Animator:
                                 obj = new Animator(objectReader);
                                 break;
