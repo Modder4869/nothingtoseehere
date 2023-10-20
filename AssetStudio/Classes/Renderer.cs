@@ -40,7 +40,11 @@ namespace AssetStudio
                 {
                     if (reader.Game.Name == "GI")
                     {
-                        CheckHeader(reader);
+                        CheckHeader(reader, 0x1A);
+                    }
+                    if (reader.Game.Name == "BH3")
+                    {
+                        CheckHeader(reader, 0x12);
                     }
                     var m_Enabled = reader.ReadBoolean();
                     var m_CastShadows = reader.ReadByte();
@@ -51,6 +55,7 @@ namespace AssetStudio
                         if (reader.Game.Name == "BH3")
                         {
                             var m_AllowHalfResolution = reader.ReadByte();
+                            int m_EnableGpuQuery = isNewHeader ? reader.ReadByte() : 0;
                         }
                         else if (reader.Game.Name == "GI_CB3")
                         {
@@ -130,7 +135,7 @@ namespace AssetStudio
                     reader.AlignStream();
                 }
 
-                if (version[0] >= 2018) //2018 and up
+                if (version[0] >= 2018 || (reader.Game.Name == "BH3" && isNewHeader)) //2018 and up
                 {
                     var m_RenderingLayerMask = reader.ReadUInt32();
                 }
@@ -239,13 +244,13 @@ namespace AssetStudio
             }
         }
 
-        private void CheckHeader(ObjectReader reader)
+        private void CheckHeader(ObjectReader reader, int offset)
         {
             short index = 0;
             var pos = reader.Position;
-            while (index != -1 && reader.Position <= pos + 0x1A)
+            while (index != -1 && reader.Position <= pos + offset)
                 index = reader.ReadInt16();
-            isNewHeader = (reader.Position - pos) == 0x1A;
+            isNewHeader = (reader.Position - pos) == offset;
             reader.Position = pos;
         }
 
